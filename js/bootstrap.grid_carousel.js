@@ -1,7 +1,7 @@
 (function( $ ) {
   "use strict";
   var settings;
-  var elem_map = [];
+  var elem_map = {};
   var rtimer = false; // timer for resize
 
   $.fn.grid_carousel = function(options) {
@@ -32,12 +32,12 @@
   }
 
   var set_slid_process = function (car) {
-    elem_map = [];
+    elem_map[car.attr('id')] = [];
     var elems = car.find('.item > .row > div');
 
     for (var i = 0; i < elems.length; i += 1) {
       var tmp = elems.eq(i).clone().removeClass('hidden-xs').removeClass('hidden-sm').removeClass('hidden-md').removeClass('hidden-lg');
-      elem_map[i] = $.trim($('<div>').append(tmp).html().replace(/(\s+|\t|\n)/g, ' ').replace(/>\s</g, '><'));
+      elem_map[car.attr('id')][i] = $.trim($('<div>').append(tmp).html().replace(/(\s+|\t|\n)/g, ' ').replace(/>\s</g, '><'));
     }
 
     set_indicator(car);
@@ -78,8 +78,8 @@
     next_row.empty();
     for (var i = 0; i < settings.col.lg; i += 1) {
       var sum = item_first_elem_id + settings.col[env] + i,
-          next_num = (elem_map.length > sum) ? sum : sum - elem_map.length,
-          tmp = $(elem_map[next_num]);
+          next_num = (elem_map[car.attr('id')].length > sum) ? sum : sum - elem_map[car.attr('id')].length,
+          tmp = $(elem_map[car.attr('id')][next_num]);
 
       if (i >= settings.col.xs) tmp.addClass('hidden-xs');
       if (i >= settings.col.sm) tmp.addClass('hidden-sm');
@@ -91,8 +91,8 @@
     prev_row.empty();
     for (var i = 0; i < settings.col.lg; i += 1) {
       var sum = item_first_elem_id - settings.col[env] + i,
-          prev_num = (0 <= sum) ? sum : elem_map.length + sum,
-          tmp = $(elem_map[prev_num]);
+          prev_num = (0 <= sum) ? sum : elem_map[car.attr('id')].length + sum,
+          tmp = $(elem_map[car.attr('id')][prev_num]);
 
       if (i >= settings.col.xs) tmp.addClass('hidden-xs');
       if (i >= settings.col.sm) tmp.addClass('hidden-sm');
