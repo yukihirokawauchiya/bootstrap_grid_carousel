@@ -40,6 +40,7 @@
       elem_map[car.attr('id')][i] = $.trim($('<div>').append(tmp).html().replace(/(\s+|\t|\n)/g, ' ').replace(/>\s</g, '><'));
     }
 
+    set_carousel_items(car);
     set_indicator(car);
     car.on('slid.bs.carousel', function() {
       set_carousel_items(car);
@@ -48,7 +49,7 @@
 
   var set_indicator = function (car) {
     var indi_container = car.find('.carousel-indicators:first'),
-        indis = indi_container.find('li'), 
+        indis = indi_container.find('li'),
         item_length = car.find('.item').length,
         loop_count = (indis.length > item_length) ? indis.length : item_length;
 
@@ -61,7 +62,6 @@
         }
       }
     }
-
   }
 
   var set_carousel_items = function (car) {
@@ -78,7 +78,7 @@
     next_row.empty();
     for (var i = 0; i < settings.col.lg; i += 1) {
       var sum = item_first_elem_id + settings.col[env] + i,
-          next_num = (elem_map[car.attr('id')].length > sum) ? sum : sum - elem_map[car.attr('id')].length,
+          next_num = (elem_map[car.attr('id')].length > sum) ? sum : sum % elem_map[car.attr('id')].length,
           tmp = $(elem_map[car.attr('id')][next_num]);
 
       if (i >= settings.col.xs) tmp.addClass('hidden-xs');
@@ -140,6 +140,10 @@
       } else {
         item.remove();
       }
+    }
+
+    if (car.find('.item').length == 2) {
+      car.find('.carousel-inner:first').append(car.find('.item:last').clone().empty().append('<div class="row"></div>'));
     }
   }
 
